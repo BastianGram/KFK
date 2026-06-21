@@ -17,7 +17,8 @@ jobs:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           # Edit this list — the role IDs to cycle through, in order.
-          ROLE_IDS=(1518207726042349668 1518207778081083432 1518207799757377658 1518207828555202610 1518207874474573926)
+          # In order Short, Best, Tall, Blondes, Mutanos, Brunettes
+          ROLE_IDS=(1518207726042349668 1518207799757377658 1518207778081083432 1518207828555202610 1518237886129115206 1518207874474573926)
 
           # ISO week number, forced to base-10 (avoids bash misreading "08"/"09" as invalid octal).
           WEEK=$(date -u +%V)
