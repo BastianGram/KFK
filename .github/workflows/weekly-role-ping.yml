@@ -1,0 +1,30 @@
+name: Weekly Role Ping
+
+on:
+  schedule:
+    # Every Monday at 08:00 UTC. GitHub may delay this by a few minutes
+    # during high load — fine for a weekly message, not fine if you need
+    # second-precision timing.
+    - cron: '0 8 * * 1'
+  workflow_dispatch: {}  # lets you trigger it manually from the Actions tab, for testing
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post weekly message to Discord
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          # Edit this list — the role IDs to cycle through, in order.
+          ROLE_IDS=(1518207726042349668 1518207778081083432 1518207799757377658 1518207828555202610 1518207874474573926)
+
+          # ISO week number, forced to base-10 (avoids bash misreading "08"/"09" as invalid octal).
+          WEEK=$(date -u +%V)
+          WEEK=$((10#$WEEK))
+          INDEX=$((WEEK % ${#ROLE_IDS[@]}))
+          ROLE_ID=${ROLE_IDS[$INDEX]}
+
+          curl -sf -X POST "$WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "{\"content\": \"This weeks extra practice will be hosted by the, <@&${ROLE_ID}>!\", \"allowed_mentions\": {\"roles\": [\"${ROLE_ID}\"]}}"
